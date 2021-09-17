@@ -18,7 +18,7 @@ Future<void> main() async {
   // CHECKED LOGIN OR LOGOUT OR NEVER LOGIN
   final login = sharedPreferences.get(Helper.isLogin);
   if(login == Helper.hasLogin){
-    initialRoute = LoginPage.route_name;
+    initialRoute = HomePage.route_name;
   } else {
     initialRoute = LoginPage.route_name;
   }

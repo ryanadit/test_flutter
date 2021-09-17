@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_app/helper/helper.dart';
 import 'package:test_app/notifier/auth_notifier.dart';
+import 'package:test_app/notifier/users_notifier.dart';
 import 'package:test_app/page/home_page.dart';
 import 'package:test_app/page/login_page/login_page.dart';
+import 'package:test_app/page/user_page/create_user_page.dart';
 
 class MainApp extends StatefulWidget {
 
@@ -31,8 +34,10 @@ class _MainAppState extends State<MainApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthNotifier()),
+        ChangeNotifierProvider(create: (_) => UsersNotifier()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         initialRoute: initialRoute,
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -41,6 +46,9 @@ class _MainAppState extends State<MainApp> {
         routes: {
           LoginPage.route_name : (_) => LoginPage(),
           HomePage.route_name: (_) => HomePage(),
+          CreateUserPage.route_name: (_) => CreateUserPage(
+            mode: Helper.modeCreate,
+          ),
         },
       ),
     );

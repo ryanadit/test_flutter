@@ -4,9 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
+import 'package:test_app/page/home_page.dart';
 
 
 class WidgetHelper{
+
+  static final String modeAlertBack = "back";
+  static final String modeAlertBackPrevious = "backPreviousPage";
+  static final String modeAlertBackHome = "backHome";
 
   static ProgressDialog? progressDialogShow(BuildContext context, ProgressDialog? pd){
     final _mediaHeight = MediaQuery.of(context).size.height;
@@ -26,7 +31,7 @@ class WidgetHelper{
     return pd;
   }
 
-  static Future<void> alertDialog(BuildContext context, String title, String message) async {
+  static Future<void> alertDialog(BuildContext context, String? title, String? message, String? mode) async {
 
     return showDialog<void>(
       context: context,
@@ -38,7 +43,7 @@ class WidgetHelper{
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height/75
               ),
-              child: Text(title,
+              child: Text(title!,
                 style: GoogleFonts.poppins(
                     fontSize: MediaQuery.of(context).size.height/45,
                     fontWeight: FontWeight.w500,
@@ -49,7 +54,7 @@ class WidgetHelper{
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(message,
+                  Text(message!,
                     style: GoogleFonts.poppins(
                         fontSize: MediaQuery.of(context).size.height/50,
                         fontWeight: FontWeight.normal
@@ -66,7 +71,16 @@ class WidgetHelper{
                       color: Colors.blueGrey
                   ),),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if(mode == modeAlertBack){
+                    Navigator.of(context).pop();
+                  } else if(mode == modeAlertBackHome) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(HomePage.route_name, (route) => false);
+                  }
+                  else {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  }
+
                 },
               ),
             ],
@@ -77,7 +91,7 @@ class WidgetHelper{
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height/75
               ),
-              child: Text(title,
+              child: Text(title!,
                 style: GoogleFonts.poppins(
                     fontSize: MediaQuery.of(context).size.height/45,
                     fontWeight: FontWeight.w500,
@@ -88,7 +102,7 @@ class WidgetHelper{
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(message,
+                  Text(message!,
                     style: GoogleFonts.poppins(
                         fontSize: MediaQuery.of(context).size.height/50,
                         fontWeight: FontWeight.normal
@@ -105,7 +119,14 @@ class WidgetHelper{
                       color: Colors.blueGrey
                   ),),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if(mode == modeAlertBack){
+                    Navigator.of(context).pop();
+                  } else if(mode == modeAlertBackHome) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(HomePage.route_name, (route) => false);
+                  } else {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
             ],
@@ -116,6 +137,28 @@ class WidgetHelper{
     );
   }
 
+  static Widget buildIconError(BuildContext context) {
+    final _mediaWidth = MediaQuery.of(context).size.width;
+    return Center(
+      child: Icon(
+        Icons.error_outline,
+        size: _mediaWidth/40,
+        color: Colors.blueGrey,
+      ),
+    );
+
+  }
+
+  static Widget buildLoading(BuildContext context) {
+    return Builder(
+      builder: (_) {
+        if(Platform.isIOS) {
+          return CupertinoActivityIndicator();
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
 
 
 }

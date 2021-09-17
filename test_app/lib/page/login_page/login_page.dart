@@ -34,9 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   String? _textPass;
   bool _notVisiblePassword = true;
   ProgressDialog? pd;
-
   AuthNotifier? _authNotifier;
-
 
   void _toggle() {
     setState(() {
@@ -53,38 +51,42 @@ class _LoginPageState extends State<LoginPage> {
         _textEmail = _textEmailEditingController!.text.trim();
         _textPass = _textPasswordEditingController!.text.trim();
       });
-      pd = WidgetHelper.progressDialogShow(context, pd);
-      _authNotifier = Provider.of(context , listen: false);
-      final object = LoginModel(
-        email: _textEmail,
-        password: _textPass
-      ).toJson();
-      final bodyObject = jsonEncode(object);
-      print(bodyObject);
-      final response = await _authNotifier?.actionLogin(bodyObject);
-      Future.delayed(Duration(milliseconds: 400)).then((value) async{
-        print(response);
-        ErrorAuthViewModel? _errorAuthViewModel = ErrorAuthViewModel();
-        _errorAuthViewModel.setErrorAuth(response);
-        pd!.close();
-        if(response != null) {
-          if(_errorAuthViewModel.errorAuthResponse?.error != null) {
-            WidgetHelper.alertDialog(context, "Kesalahan", "${_errorAuthViewModel.errorAuthResponse?.error}");
-          }else {
-            await Helper.saveSessionLogin(response);
-            Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (_) => HomePage()),
-                    (route) => false);
+      if(_textEmail!.contains(Helper.regexEmail)) {
+        pd = WidgetHelper.progressDialogShow(context, pd);
+        _authNotifier = Provider.of(context , listen: false);
+        final object = LoginModel(
+            email: _textEmail,
+            password: _textPass
+        ).toJson();
+        final bodyObject = jsonEncode(object);
+        print(bodyObject);
+        final response = await _authNotifier?.actionLogin(bodyObject);
+        Future.delayed(Duration(milliseconds: 400)).then((value) async{
+          print(response);
+          ErrorAuthViewModel? _errorAuthViewModel = ErrorAuthViewModel();
+          _errorAuthViewModel.setErrorAuth(response);
+          pd!.close();
+          if(response != null) {
+            if(_errorAuthViewModel.errorAuthResponse?.error != null) {
+              WidgetHelper.alertDialog(context, "Kesalahan", "${_errorAuthViewModel.errorAuthResponse?.error}", WidgetHelper.modeAlertBack);
+            }else {
+              await Helper.saveSessionLogin(response);
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (_) => HomePage()),
+                      (route) => false);
+            }
+          } else {
+            WidgetHelper.alertDialog(context, "Kesalahan", "Gagal Menghubungkan", WidgetHelper.modeAlertBack);
           }
-        } else {
-          WidgetHelper.alertDialog(context, "Kesalahan", "Gagal Menghubungkan");
-        }
 
-      });
+        });
+      } else {
+        WidgetHelper.alertDialog(context, "Kesalahan", "Format email salah", WidgetHelper.modeAlertBack);
+      }
 
 
     } else {
-      WidgetHelper.alertDialog(context, "Kesalahan", "Email dan Password tidak boleh kosong");
+      WidgetHelper.alertDialog(context, "Kesalahan", "Email dan Password tidak boleh kosong", WidgetHelper.modeAlertBack);
     }
 
   }
